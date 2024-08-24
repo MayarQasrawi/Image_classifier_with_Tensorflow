@@ -1,85 +1,87 @@
-import sys
-import time 
-import numpy as np
 from PIL import Image
-import argparse
 import json
-import matplotlib.pyplot as plt
-import tensorflow as tf
 import tensorflow_hub as hub
+import tensorflow as tf
 import tensorflow_datasets as tfds
+import argparse
+import numpy as np
 
 
+
+
+
+def process_image(image):
+    image_size = 224
+    image = tf.cast(image, tf.float32)
+    image = tf.image.resize(image, (image_size, image_size))
+    image /= 255
+    image = image.numpy().squeeze()
+    return image
+
+
+def predict(image_path, model, top_k, class_names):
+
+    image = Image.open(image_path)
+
+    image = np.asarray(image)
+   
+    processed_image = process_image(image)
+    image = np.expand_dims(processed_image, axis = 0)
+
+
+
+    ps = model.predict(image)[0]
+
+    probabilities = np.sort(ps)[-top_k:len(ps)]
+    prbabilities = probabilities.tolist()
+    print(prbabilities)
+    classes = np.argpartition(ps, -top_k)[-top_k:]
+    classes = classes.tolist()
+    names = [class_names.get(str(i )).capitalize() for i in (classes)] 
+    print(names)
+
+
+    class_names = [class_names.get(str(i)).capitalize() for i in classes]
+    ps_cl = list(zip(prbabilities, names))
+    print(ps_cl)
+    return probabilities, names
+
+#intialize the batch size and image size
 batch_size = 32
 image_size = 224
 
-
-class_names = {}
-
-def process_image(image): 
-   
-    image = tf.cast(image, tf.float32)
-    image= tf.image.resize(image, (image_size, image_size))
-    image /= 255
-    image = image.numpy()
-    
-    return image
-    
-
-def predict(image_path, model, top_k=5):
-    
-    image = Image.open(image_path)
-    image = np.asarray(image)
-    image = np.expand_dims(image,  axis=0)
-    image = process_image(image)
-    prob_list = model.predict(image)
-    
-    
-    classes = []
-    probs = []
-    
-    rank = prob_list[0].argsort()[::-1]
-    
-    for i in range(top_k):
-        
-        index = rank[i] + 1
-        cls = class_names[str(index)]
-        
-        probs.append(prob_list[0][index])
-        classes.append(cls)
-    
-    return probs, classes
+pars = argparse.ArgumentParser()
+pars.add_argument('image_path')
+pars.add_argument('model')
+pars.add_argument('--top_k')
+pars.add_argument('--class_file') 
 
 
-if __name__ == '__main__':
-    print('predict.py, running')
-    
-    parser = argparse.ArgumentParser()
-    parser.add_argument('arg1')
-    parser.add_argument('arg2')
-    parser.add_argument('--top_k')
-    parser.add_argument('--category_names') 
-    
-    
-    args = parser.parse_args()
+'''
+ Using parse_args() can make your code more readable
+ by separating the argument parsing logic from the rest of your code.
+'''
+args = parser.parse_args()
     print(args)
-    
-    print('arg1:', args.arg1)
-    print('arg2:', args.arg2)
+    print('arg1:', args.image_path)
+    print('arg2:', args.model)
     print('top_k:', args.top_k)
-    print('category_names:', args.category_names)
-    
-    image_path = args.arg1
-    
-    model = tf.keras.models.load_model(args.arg2 ,custom_objects={'KerasLayer':hub.KerasLayer} )
-    top_k = args.top_k
-    if top_k is None: 
-        top_k = 5
+    print('class_file:', args.class_file)
 
-    with open(args.category_names, 'r') as f:
-        class_names = json.load(f)
-   
-    probs, classes = predict(image_path, model, top_k)
+
     
-    print(probs)
-    print(classes)
+
+top_k = args.top_k
+if top_k is None: 
+    top_k = 5
+model = tf.keras.models.load_model(args.arg2 ,custom_objects={'KerasLayer':hub.KerasLayer} )
+class_names=[]
+with open(args.category_names, 'r') as f:
+    class_names = json.load(f)
+
+image_path = args.image_path
+
+probs, classes = predict(image_path, model, top_k,class_names)
+
+print('classes:',classes)
+print('proediction:', probs)
