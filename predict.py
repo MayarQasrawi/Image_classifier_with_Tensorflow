@@ -54,7 +54,7 @@ pars = argparse.ArgumentParser()
 pars.add_argument('image_path')
 pars.add_argument('model')
 pars.add_argument('--top_k')
-pars.add_argument('--class_file') 
+pars.add_argument('--category_names') 
 
 
 '''
@@ -66,7 +66,7 @@ args = parser.parse_args()
     print('arg1:', args.image_path)
     print('arg2:', args.model)
     print('top_k:', args.top_k)
-    print('class_file:', args.class_file)
+    print('category_names', args.category_names)
 
 
     
