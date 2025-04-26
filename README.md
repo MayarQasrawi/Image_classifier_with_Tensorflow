@@ -1,11 +1,34 @@
-# Intro to Machine Learning - TensorFlow Project
+# Image Classifier with TensorFlow
 
-Project code for Udacity's Intro to Machine Learning with TensorFlow Nanodegree program. In this project, you will first develop code for an image classifier built with TensorFlow, then you will convert it into a command line application.
+## 📋 Project Description
 
-In order to complete this project, you will need to use the GPU enabled workspaces within the classroom.  The files are all available here for your convenience, but running on your local CPU will likely not work well.
+This repository contains an implementation of an image classification model using TensorFlow. The project demonstrates how to build, train, and evaluate a neural network for classifying images into different categories.
 
-You should also only enable the GPU when you need it. If you are not using the GPU, please disable it so you do not run out of time!
+## 🔑 Key Features
 
-### Data
+- Deep learning model implementation using TensorFlow/Keras
+- Image preprocessing and data augmentation techniques
+- Training pipeline for image classification
+- Model evaluation and performance metrics
+- Prediction functionality for new images
 
-The data for this project is quite large - in fact, it is so large you cannot upload it onto Github.  If you would like the data for this project, you will want download it from the workspace in the classroom.  Though actually completing the project is likely not possible on your local unless you have a GPU.  You will be training using 102 different types of flowers, where there ~20 images per flower to train on.  Then you will use your trained classifier to see if you can predict the type for new images of the flowers.
+## 🧠 Technical Implementation
+
+The project utilizes convolutional neural networks (CNNs) to extract features from images and classify them into predefined categories. It showcases:
+
+- Data loading and preprocessing
+- Model architecture design
+- Training process with validation
+- Evaluation of model performance
+- Making predictions on new data
+
+## 🛠️ Technologies
+
+- TensorFlow/Keras
+- Python
+- NumPy
+- Matplotlib for visualization
+
+## 🚀 Usage
+
+The repository provides code examples for training your own image classifier as well as using pre-trained models for inference. It serves as both a learning resource and a practical implementation that can be adapted for various image classification tasks.
